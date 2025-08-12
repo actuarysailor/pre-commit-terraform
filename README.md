@@ -49,6 +49,7 @@ If you want to support the development of `pre-commit-terraform` and [many other
   * [3. Add configs and hooks](#3-add-configs-and-hooks)
   * [4. Run](#4-run)
 * [Available Hooks](#available-hooks)
+  * [Docker-based hooks (no local tool installation required)](#docker-based-hooks-no-local-tool-installation-required)
 * [Hooks usage notes and examples](#hooks-usage-notes-and-examples)
   * [Known limitations](#known-limitations)
   * [All hooks: Usage of environment variables in `--args`](#all-hooks-usage-of-environment-variables-in---args)
@@ -1328,7 +1329,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}

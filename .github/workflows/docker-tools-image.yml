@@ -43,6 +43,7 @@ jobs:
           type=ref,event=pr
           type=sha
           type=raw,value=latest,enable={{is_default_branch}}
+          type=raw,value=latest,enable=${{ github.ref == 'refs/heads/feat/use-docker-pre-commit' }}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
@@ -55,6 +56,9 @@ jobs:
 
     - name: Test Docker image
       run: |
-        docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest terraform --version
-        docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest terraform-docs --version
-        docker run --rm ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest tflint --version
+        # Use the first tag from the metadata output (branch-specific tag)
+        IMAGE_TAG=$(echo '${{ steps.meta.outputs.tags }}' | head -n1)
+        echo "Testing image: $IMAGE_TAG"
+        docker run --rm $IMAGE_TAG terraform --version
+        docker run --rm $IMAGE_TAG terraform-docs --version
+        docker run --rm $IMAGE_TAG tflint --version

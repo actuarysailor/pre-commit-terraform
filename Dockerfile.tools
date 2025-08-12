@@ -1,6 +1,6 @@
 # Dockerfile.tools - Docker image for individual tool execution
-# hadolint ignore=DL3006
 ARG BASE_IMAGE
+# hadolint ignore=DL3006
 FROM ${BASE_IMAGE}
 
 # Override entrypoint to allow direct tool execution

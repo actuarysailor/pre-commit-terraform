@@ -142,7 +142,7 @@ jobs:
         build-args: |
           BASE_IMAGE=${{ env.IMAGE }}
         push: false
-        load: true
+        # load: true
         tags: ${{ env.IMAGE }}-tools
         provenance: false
         secrets: |

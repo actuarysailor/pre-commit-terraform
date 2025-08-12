@@ -54,12 +54,14 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
+    - name: Extract first image tag
+      id: extract_tag
+      run: |
+        echo "tag=$(echo '${{ steps.meta.outputs.tags }}' | head -n1)" >> $GITHUB_OUTPUT
+
     - name: Test Docker image
       run: |
-        # Use the first tag from the metadata output (branch-specific tag)
-        # Use GitHub Actions' built-in extraction to avoid template injection
-        IMAGE_TAG="$(echo "${{ steps.meta.outputs.tags }}" | head -n1)"
-        echo "Testing image: $IMAGE_TAG"
-        docker run --rm $IMAGE_TAG terraform --version
-        docker run --rm $IMAGE_TAG terraform-docs --version
-        docker run --rm $IMAGE_TAG tflint --version
+        echo "Testing image: ${{ steps.extract_tag.outputs.tag }}"
+        docker run --rm ${{ steps.extract_tag.outputs.tag }} terraform --version
+        docker run --rm ${{ steps.extract_tag.outputs.tag }} terraform-docs --version
+        docker run --rm ${{ steps.extract_tag.outputs.tag }} tflint --version

@@ -23,6 +23,7 @@ jobs:
       contents: read
       packages: write
     strategy:
+      fail-fast: false
       matrix:
         include:
         - dockerfile: Dockerfile
@@ -42,11 +43,11 @@ jobs:
           exit 1
         fi
 
-    - name: Echo GITHUB_TOKEN x-oauth-scopes header
+    - name: Output GitHub API JSON with GITHUB_TOKEN
       if: always()
       run: |
-        echo "Checking x-oauth-scopes header for GITHUB_TOKEN..."
-        curl -sS -I -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com | grep -i x-oauth-scopes || echo "No x-oauth-scopes header found."
+        echo "Full JSON response from GitHub API using GITHUB_TOKEN:"
+        curl -sS -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com | jq . || cat
 
   docker:
     runs-on: ubuntu-latest
@@ -54,6 +55,7 @@ jobs:
       contents: read
       packages: write
     strategy:
+      fail-fast: false
       matrix:
         include:
         - dockerfile: Dockerfile

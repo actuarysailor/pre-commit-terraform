@@ -1,7 +1,93 @@
-# Dockerfile.tools - Docker image for individual tool execution
-ARG BASE_IMAGE
-# hadolint ignore=DL3006
-FROM ${BASE_IMAGE}
+
+# Dockerfile.tools - Standalone Docker image for individual tool execution
+FROM python:3.12-alpine@sha256:9b8808206f4a956130546a32cbdd8633bc973b19db2923b7298e6f90cc26db08 AS python_base
+
+FROM python_base AS builder
+ARG TARGETOS
+ARG TARGETARCH
+WORKDIR /bin_dir
+RUN apk add --no-cache \
+    bash=~5 \
+    curl=~8 && \
+    python3 -m pip install --no-cache-dir --upgrade \
+        pip~=25.0 \
+        setuptools~=75.8
+COPY tools/install/ /install/
+ARG PRE_COMMIT_VERSION=${PRE_COMMIT_VERSION:-latest}
+RUN touch /.env && \
+    if [ "$PRE_COMMIT_VERSION" = "false" ]; then \
+        echo "Vital software can't be skipped" && exit 1; \
+    fi
+RUN /install/pre-commit.sh
+ARG OPENTOFU_VERSION=${OPENTOFU_VERSION:-false}
+ARG TERRAFORM_VERSION=${TERRAFORM_VERSION:-false}
+ARG CHECKOV_VERSION=${CHECKOV_VERSION:-false}
+ARG HCLEDIT_VERSION=${HCLEDIT_VERSION:-false}
+ARG INFRACOST_VERSION=${INFRACOST_VERSION:-false}
+ARG TERRAFORM_DOCS_VERSION=${TERRAFORM_DOCS_VERSION:-false}
+ARG TERRAGRUNT_VERSION=${TERRAGRUNT_VERSION:-false}
+ARG TERRASCAN_VERSION=${TERRASCAN_VERSION:-false}
+ARG TFLINT_VERSION=${TFLINT_VERSION:-false}
+ARG TFSEC_VERSION=${TFSEC_VERSION:-false}
+ARG TFUPDATE_VERSION=${TFUPDATE_VERSION:-false}
+ARG TRIVY_VERSION=${TRIVY_VERSION:-false}
+ARG INSTALL_ALL=${INSTALL_ALL:-false}
+RUN if [ "$INSTALL_ALL" != "false" ]; then \
+        echo "OPENTOFU_VERSION=latest"       >> /.env && \
+        echo "TERRAFORM_VERSION=latest"      >> /.env && \
+        echo "CHECKOV_VERSION=latest"        >> /.env && \
+        echo "HCLEDIT_VERSION=latest"        >> /.env && \
+        echo "INFRACOST_VERSION=latest"      >> /.env && \
+        echo "TERRAFORM_DOCS_VERSION=latest" >> /.env && \
+        echo "TERRAGRUNT_VERSION=latest"     >> /.env && \
+        echo "TERRASCAN_VERSION=latest"      >> /.env && \
+        echo "TFLINT_VERSION=latest"         >> /.env && \
+        echo "TFSEC_VERSION=latest"          >> /.env && \
+        echo "TFUPDATE_VERSION=latest"       >> /.env && \
+        echo "TRIVY_VERSION=latest"          >> /.env \
+    ; fi
+RUN /install/opentofu.sh
+RUN /install/terraform.sh
+RUN /install/checkov.sh
+RUN /install/hcledit.sh
+RUN /install/infracost.sh
+RUN /install/terraform-docs.sh
+RUN /install/terragrunt.sh
+RUN /install/terrascan.sh
+RUN /install/tflint.sh
+RUN /install/tfsec.sh
+RUN /install/tfupdate.sh
+RUN /install/trivy.sh
+
+FROM python_base
+RUN apk add --no-cache \
+    git=~2 \
+    bash=~5 \
+    musl-dev=~1 \
+    gcc=~14 \
+    su-exec=~0.2 \
+    openssh-client=~10
+COPY --from=builder /usr/local/bin/pre-commit /usr/local/bin/checkov* /usr/bin/
+COPY --from=builder /bin_dir/ /usr/bin/
+COPY --from=builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
+COPY --from=builder /root/ /root/
+COPY hooks/ /usr/local/bin/hooks/
+COPY lib_getopt /usr/local/bin/
+COPY src/pre_commit_terraform/ /usr/local/lib/python3.12/site-packages/pre_commit_terraform/
+RUN if [ "$(grep -o '^terraform-docs SKIPPED$' /usr/bin/tools_versions_info)" = "" ]; then \
+        apk add --no-cache perl=~5 \
+    ; fi && \
+    if [ "$(grep -o '^infracost SKIPPED$' /usr/bin/tools_versions_info)" = "" ]; then \
+        apk add --no-cache jq=~1 \
+    ; fi && \
+    git config --global --add safe.directory /lint
+COPY tools/entrypoint.sh /entrypoint.sh
+COPY hooks/ /usr/bin/hooks/
+COPY lib_getopt /usr/bin/lib_getopt
+RUN chmod +x /usr/bin/hooks/*.sh
+ENV PRE_COMMIT_COLOR=${PRE_COMMIT_COLOR:-always}
+ENV INFRACOST_API_KEY=${INFRACOST_API_KEY:-}
+ENV INFRACOST_SKIP_UPDATE_CHECK=${INFRACOST_SKIP_UPDATE_CHECK:-false}
 
 # Override entrypoint to allow direct tool execution
 ENTRYPOINT []

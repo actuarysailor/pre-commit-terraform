@@ -57,7 +57,8 @@ jobs:
     - name: Test Docker image
       run: |
         # Use the first tag from the metadata output (branch-specific tag)
-        IMAGE_TAG=$(echo '${{ steps.meta.outputs.tags }}' | head -n1)
+        # Use GitHub Actions' built-in extraction to avoid template injection
+        IMAGE_TAG="$(echo "${{ steps.meta.outputs.tags }}" | head -n1)"
         echo "Testing image: $IMAGE_TAG"
         docker run --rm $IMAGE_TAG terraform --version
         docker run --rm $IMAGE_TAG terraform-docs --version

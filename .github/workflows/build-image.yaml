@@ -10,59 +10,12 @@ on:
     types:
     - created
   schedule:
-  - cron: 00 00 * * 0
+  - cron: 00 00 * * *
 
 env:
   REGISTRY: ghcr.io
 
 jobs:
-
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - dockerfile: Dockerfile
-          image_name: ${{ github.repository }}
-        - dockerfile: Dockerfile.tools
-          image_name: ${{ github.repository }}-tools
-    steps:
-    - name: Verify GHCR token permissions
-      run: |
-        echo "Checking GHCR permissions for ${{ env.REGISTRY }}/${{ matrix.image_name }}"
-        response=$(curl -s -w "\n%{http_code}" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          "https://${{ env.REGISTRY }}/v2/${{ matrix.image_name }}/tags/list")
-        body=$(echo "$response" | sed '$d')
-        status=$(echo "$response" | tail -n1)
-        if [ "$status" = "200" ]; then
-          echo "Token has access to list tags for ${{ matrix.image_name }}."
-        else
-          echo "Token does NOT have access to list tags for ${{ matrix.image_name }}. HTTP status: $status"
-          echo "Response body:"
-          echo "$body" | jq . || echo "$body"
-          exit 1
-        fi
-
-    - name: Output GitHub API JSON with GITHUB_TOKEN
-      if: always()
-      run: |
-        echo "Full JSON response from GitHub API /repos/:owner/:repo endpoint using GITHUB_TOKEN (should always work):"
-        repo_json=$(curl -sS -D headers.txt -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}")
-        echo "$repo_json" | jq . || cat
-        echo
-        echo "Response headers from /repos/:owner/:repo endpoint as JSON:"
-        awk -F': ' 'NF==2{gsub(/\r/,"",$2); printf "\"%s\": \"%s\",\n", $1, $2}' headers.txt | \
-          sed '$ s/,$//' | \
-          awk 'BEGIN{print "{"} {print} END{print "}"}'
-        rm -f headers.txt
-
   docker:
     runs-on: ubuntu-latest
     permissions:

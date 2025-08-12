@@ -112,8 +112,9 @@ jobs:
 
     # Can't build both platforms and use --load at the same time
     # https://github.com/docker/buildx/issues/59#issuecomment-1433097926
+    # Build Multi-arch docker-image
     - name: Build Multi-arch docker-image
-      if: >-
+      if: >
         steps.changed-files-specific.outputs.any_changed == 'true'
         && matrix.os == 'ubuntu-latest'
       uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83  # v6.18.0
@@ -131,7 +132,9 @@ jobs:
 
     # Build tools image using Dockerfile.tools and the just-built main image as base
     - name: Build tools image
-      if: steps.changed-files-specific.outputs.any_changed == 'true'
+      if: >
+        steps.changed-files-specific.outputs.any_changed == 'true'
+        && matrix.os == 'ubuntu-latest'
       uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83  # v6.18.0
       with:
         context: .
@@ -147,7 +150,9 @@ jobs:
 
     # Smoke test the tools image
     - name: Smoke test tools image
-      if: steps.changed-files-specific.outputs.any_changed == 'true'
+      if: >
+        steps.changed-files-specific.outputs.any_changed == 'true'
+        && matrix.os == 'ubuntu-latest'
       env:
         TOOLS_IMAGE: ${{ env.IMAGE }}-tools
       run: |

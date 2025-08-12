@@ -57,9 +57,9 @@ jobs:
     - name: Test Docker image
       env:
         # Use the first tag from the metadata output (branch-specific tag)
-        IMAGE_TAG: ${{ fromJSON(steps.meta.outputs.tags)[0] }}
+        IMAGE_TAG: ${{ split('\n', steps.meta.outputs.tags)[0] }}
       run: |
         echo "Testing image: $IMAGE_TAG"
-        docker run --rm $IMAGE_TAG terraform --version
-        docker run --rm $IMAGE_TAG terraform-docs --version
-        docker run --rm $IMAGE_TAG tflint --version
+        docker run --rm "$IMAGE_TAG" terraform --version
+        docker run --rm "$IMAGE_TAG" terraform-docs --version
+        docker run --rm "$IMAGE_TAG" tflint --version

@@ -5,16 +5,16 @@ repos:
 - repo: https://github.com/actuarysailor/pre-commit-terraform
   rev: v1.96.1  # Use a stable release version
   hooks:
-    # Option 1: Use Docker-based hooks (no local tool installation required)
-    # These require the pre-commit-terraform-tools Docker image
+  # Option 1: Use Docker-based hooks (no local tool installation required)
+  # These require the pre-commit-terraform-tools Docker image
   - id: terraform_fmt_docker
   - id: terraform_validate_docker
   - id: terraform_docs_docker
   - id: terraform_checkov_docker
   - id: terraform_trivy_docker
 
-    # Option 2: Use traditional script-based hooks (requires local tools)
-    # Uncomment these if you have terraform, tflint, etc. installed locally
+  # Option 2: Use traditional script-based hooks (requires local tools)
+  # Uncomment these if you have terraform, tflint, etc. installed locally
     # - id: terraform_fmt
     # - id: terraform_validate
     # - id: terraform_docs

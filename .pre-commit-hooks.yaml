@@ -184,10 +184,9 @@
   name: Terraform fmt (Docker)
   description: >-
     Rewrites all Terraform configuration files to a canonical format using Docker.
-  entry: terraform
+  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  docker_image: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
-  args: [fmt]
+  args: [terraform, fmt]
   files: \.(tf|tofu|tfvars|tftest\.hcl|tfmock\.hcl)$
   exclude: \.terraform/.*$
 
@@ -195,10 +194,9 @@
   name: Terraform validate (Docker)
   description: Validates all Terraform configuration files using Docker.
   require_serial: true
-  entry: terraform
+  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  docker_image: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
-  args: [validate]
+  args: [terraform, validate]
   files: \.(tf|tofu|tfvars|terraform\.lock\.hcl)$
   exclude: \.terraform/.*$
 
@@ -206,9 +204,9 @@
   name: Terraform validate with tflint (Docker)
   description: Validates all Terraform configuration files with TFLint using Docker.
   require_serial: true
-  entry: tflint
+  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  docker_image: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
+  args: [tflint]
   files: \.(tf|tofu|tfvars)$
   exclude: \.terraform/.*$
 

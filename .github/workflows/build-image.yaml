@@ -15,8 +15,6 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_TAG: ${{ steps.meta.outputs.tags && steps.meta.outputs.tags.split('\n')[0]
-    }}
 
 jobs:
   docker:
@@ -82,7 +80,7 @@ jobs:
     - name: Test tools image
       if: matrix.dockerfile == 'Dockerfile.tools' && github.event_name != 'schedule'
       env:
-        IMAGE_TAG: ${{ steps.meta.outputs.tags }}
+        IMAGE_TAG: ${{ steps.meta.outputs.tags.split('\n')[0] }}
       run: |
         echo "Testing tools image: $IMAGE_TAG"
         docker run --rm "$IMAGE_TAG" terraform --version

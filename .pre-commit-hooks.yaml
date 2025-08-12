@@ -184,7 +184,7 @@
   name: Terraform fmt (Docker)
   description: >-
     Rewrites all Terraform configuration files to a canonical format using Docker.
-  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
+  entry: ghcr.io/antonbabenko/pre-commit-terraform-tools:latest
   language: docker_image
   args: [terraform, fmt]
   files: \.(tf|tofu|tfvars|tftest\.hcl|tfmock\.hcl)$

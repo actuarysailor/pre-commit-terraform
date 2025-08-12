@@ -1,0 +1,26 @@
+# Example .pre-commit-config.yaml for using Docker-based hooks
+
+repos:
+# Standard script-based hooks (existing functionality)
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.XX.X  # Use the latest version
+  hooks:
+    - id: terraform_fmt
+    - id: terraform_validate
+    - id: terraform_docs
+
+# Docker-based hooks (new functionality)
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.XX.X  # Use the latest version
+  hooks:
+    - id: terraform_fmt_docker
+    - id: terraform_validate_docker
+    - id: terraform_tflint_docker
+
+# Or use the separate Docker hooks file
+# - repo: https://github.com/antonbabenko/pre-commit-terraform
+#   rev: v1.XX.X
+#   file: .pre-commit-hooks-docker.yaml
+#   hooks:
+#     - id: terraform_fmt_docker
+#     - id: terraform_validate_docker

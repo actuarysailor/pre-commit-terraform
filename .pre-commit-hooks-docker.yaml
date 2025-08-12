@@ -1,0 +1,177 @@
+- id: infracost_breakdown_docker
+  name: Infracost breakdown (Docker)
+  description: Check terraform infrastructure cost using Docker
+  entry: hooks/infracost_breakdown.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  require_serial: true
+  files: \.(tf|tofu|tfvars|hcl)$
+  exclude: \.terraform/.*$
+
+- id: terraform_fmt_docker
+  name: Terraform fmt (Docker)
+  description: >-
+    Rewrites all Terraform configuration files to a canonical format using Docker.
+  entry: hooks/terraform_fmt.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  # Supported extensions by Terraform specified in
+  # https://github.com/hashicorp/terraform/blob/0c63fb2b097edcd5cb1a91322765a414206fbea2/internal/command/fmt.go#L30-L35
+  files: \.(tf|tofu|tfvars|tftest\.hcl|tfmock\.hcl)$
+  exclude: \.terraform/.*$
+
+- id: terraform_validate_docker
+  name: Terraform validate (Docker)
+  description: Validates all Terraform configuration files using Docker.
+  require_serial: true
+  entry: hooks/terraform_validate.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: \.(tf|tofu|tfvars|terraform\.lock\.hcl)$
+  exclude: \.terraform/.*$
+
+- id: terraform_docs_docker
+  name: Terraform docs (Docker)
+  description: >-
+    Inserts input and output documentation into README.md
+    (using terraform-docs) via Docker.
+  require_serial: true
+  entry: hooks/terraform_docs.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: \.(tf|tofu|terraform\.lock\.hcl)$
+  exclude: \.terraform/.*$
+
+- id: terraform_docs_without_aggregate_type_defaults_docker
+  name: Terraform docs (without aggregate type defaults) (Docker)
+  description: >-
+    Inserts input and output documentation into README.md
+    (using terraform-docs). Identical to terraform_docs via Docker.
+  require_serial: true
+  entry: hooks/terraform_docs.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: \.(tf|tofu)$
+  exclude: \.terraform/.*$
+
+- id: terraform_providers_lock_docker
+  name: Lock terraform provider versions (Docker)
+  description: Updates provider signatures in dependency lock files using Docker.
+  require_serial: true
+  entry: hooks/terraform_providers_lock.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: (\.terraform\.lock\.hcl)$
+  exclude: \.terraform/.*$
+
+- id: terraform_tflint_docker
+  name: Terraform validate with tflint (Docker)
+  description: Validates all Terraform configuration files with TFLint using Docker.
+  require_serial: true
+  entry: hooks/terraform_tflint.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: \.(tf|tofu|tfvars)$
+  exclude: \.terraform/.*$
+
+- id: terragrunt_fmt_docker
+  name: Terragrunt fmt (Docker)
+  description: >-
+    Rewrites all Terragrunt configuration files to a canonical format using Docker.
+  entry: hooks/terragrunt_fmt.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: (\.hcl)$
+  exclude: \.terraform/.*$
+
+- id: terragrunt_validate_docker
+  name: Terragrunt validate (Docker)
+  description: Validates all Terragrunt configuration files using Docker.
+  entry: hooks/terragrunt_validate.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: (\.hcl)$
+  exclude: \.terraform/.*$
+
+- id: terragrunt_validate_inputs_docker
+  name: Terragrunt validate inputs (Docker)
+  description: Validates Terragrunt unused and undefined inputs using Docker.
+  entry: hooks/terragrunt_validate_inputs.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: (\.hcl)$
+  exclude: \.terraform/.*$
+
+- id: terragrunt_providers_lock_docker
+  name: Terragrunt providers lock (Docker)
+  description: >-
+    Updates provider signatures in dependency lock files using terragrunt via Docker.
+  entry: hooks/terragrunt_providers_lock.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: (terragrunt|\.terraform\.lock)\.hcl$
+  exclude: \.(terraform/.*|terragrunt-cache)$
+
+- id: terraform_tfsec_docker
+  name: Terraform validate with tfsec (deprecated, use "terraform_trivy") (Docker)
+  description: >-
+    Static analysis of Terraform templates to spot potential security issues using Docker.
+  require_serial: true
+  entry: hooks/terraform_tfsec.sh
+  files: \.(tf|tofu|tfvars)$
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+
+- id: terraform_trivy_docker
+  name: Terraform validate with trivy (Docker)
+  description: >-
+    Static analysis of Terraform templates to spot potential security issues using Docker.
+  require_serial: true
+  entry: hooks/terraform_trivy.sh
+  files: \.(tf|tofu|tfvars)$
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+
+- id: terraform_checkov_docker
+  name: Checkov (Docker)
+  description: Runs checkov on Terraform templates using Docker.
+  entry: hooks/terraform_checkov.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  always_run: false
+  files: \.(tf|tofu)$
+  exclude: \.terraform/.*$
+  require_serial: true
+
+- id: terraform_wrapper_module_for_each_docker
+  name: Terraform wrapper with for_each in module (Docker)
+  description: Generate Terraform wrappers with for_each in module using Docker.
+  entry: hooks/terraform_wrapper_module_for_each.sh
+  language: docker_image
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  pass_filenames: false
+  always_run: false
+  require_serial: true
+  files: \.(tf|tofu)$
+  exclude: \.terraform/.*$
+
+- id: terrascan_docker
+  name: terrascan (Docker)
+  description: Runs terrascan on Terraform templates using Docker.
+  language: docker_image
+  entry: hooks/terrascan.sh
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  files: \.(tf|tofu)$
+  exclude: \.terraform/.*$
+  require_serial: true
+
+- id: tfupdate_docker
+  name: tfupdate (Docker)
+  description: Runs tfupdate on Terraform templates using Docker.
+  language: docker_image
+  entry: hooks/tfupdate.sh
+  docker_image: ghcr.io/antonbabenko/pre-commit-terraform:latest
+  args:
+  - --args=terraform
+  files: \.(tf|tofu)$
+  require_serial: true

@@ -46,4 +46,4 @@ jobs:
         # Custom token for triggering Docker image build GH Workflow on release
         # created by cycjimmy/semantic-release-action. Events created by
         # workflows with default GITHUB_TOKEN not trigger other GH Workflow.
-        GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

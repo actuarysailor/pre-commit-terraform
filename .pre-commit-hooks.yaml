@@ -203,7 +203,8 @@
 
 - id: terraform_tflint_docker
   name: Terraform validate with tflint (Docker)
-  description: Validates all Terraform configuration files with TFLint using Docker.
+  description: Validates all Terraform configuration files with TFLint using
+    Docker.
   require_serial: true
   entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
@@ -239,7 +240,8 @@
 - id: terraform_trivy_docker
   name: Terraform validate with trivy (Docker)
   description: >-
-    Static analysis of Terraform templates to spot potential security issues using Docker.
+    Static analysis of Terraform templates to spot potential security issues
+    using Docker.
   require_serial: true
   entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image

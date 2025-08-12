@@ -3,13 +3,13 @@ name: Build and Publish Docker Tools Image
 on:
   push:
     branches:
-      - feat/use-docker-pre-commit
-      - main
-      - master
+    - feat/use-docker-pre-commit
+    - main
+    - master
   pull_request:
     branches:
-      - main
-      - master
+    - main
+    - master
 
 env:
   REGISTRY: ghcr.io

@@ -7,12 +7,12 @@ repos:
   hooks:
     # Option 1: Use Docker-based hooks (no local tool installation required)
     # These require the pre-commit-terraform-tools Docker image
-    - id: terraform_fmt_docker
-    - id: terraform_validate_docker  
-    - id: terraform_docs_docker
-    - id: terraform_checkov_docker
-    - id: terraform_trivy_docker
-    
+  - id: terraform_fmt_docker
+  - id: terraform_validate_docker
+  - id: terraform_docs_docker
+  - id: terraform_checkov_docker
+  - id: terraform_trivy_docker
+
     # Option 2: Use traditional script-based hooks (requires local tools)
     # Uncomment these if you have terraform, tflint, etc. installed locally
     # - id: terraform_fmt
@@ -27,7 +27,7 @@ repos:
 
 # Docker hooks advantages:
 # ✅ No need to install tools locally (terraform, tflint, checkov, etc.)
-# ✅ Consistent tool versions across team members  
+# ✅ Consistent tool versions across team members
 # ✅ Isolated environment prevents dependency conflicts
 # ✅ Works on any system with Docker installed
 

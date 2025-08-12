@@ -3,7 +3,6 @@ name: Build and Publish Docker Tools Image
 on:
   push:
     branches:
-    - feat/use-docker-pre-commit
     - main
     - master
   pull_request:
@@ -45,7 +44,6 @@ jobs:
           type=ref,event=pr
           type=sha
           type=raw,value=latest,enable={{is_default_branch}}
-          type=raw,value=latest,enable=${{ github.ref == 'refs/heads/feat/use-docker-pre-commit' }}
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v5

@@ -12,17 +12,15 @@ on:
   schedule:
   - cron: 00 00 * * 0
 
-permissions:
-  contents: read
-  # for docker/build-push-action to publish docker image
-  packages: write
-
 env:
   REGISTRY: ghcr.io
 
 jobs:
   docker:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     strategy:
       matrix:
         include:

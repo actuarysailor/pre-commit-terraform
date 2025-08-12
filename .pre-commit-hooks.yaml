@@ -207,7 +207,8 @@
   require_serial: true
   entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  args: [tflint]
+  args: [tflint, --chdir=.]
+  pass_filenames: false
   files: \.(tf|tofu|tfvars)$
   exclude: \.terraform/.*$
 

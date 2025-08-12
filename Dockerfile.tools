@@ -1,5 +1,6 @@
 # Dockerfile.tools - Docker image for individual tool execution
-FROM ghcr.io/antonbabenko/pre-commit-terraform:latest
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 # Override entrypoint to allow direct tool execution
 ENTRYPOINT []

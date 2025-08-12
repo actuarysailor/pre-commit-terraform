@@ -197,6 +197,7 @@
   entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
   args: [terraform, validate]
+  pass_filenames: false
   files: \.(tf|tofu|tfvars|terraform\.lock\.hcl)$
   exclude: \.terraform/.*$
 
@@ -215,20 +216,18 @@
   description: >-
     Inserts input and output documentation into README.md using Docker.
   require_serial: true
-  entry: terraform-docs
+  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  docker_image: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
-  args: [markdown, table, --output-file, README.md, .]
+  args: [terraform-docs, markdown, table, --output-file, README.md, .]
   files: \.(tf|tofu|terraform\.lock\.hcl)$
   exclude: \.terraform/.*$
 
 - id: terraform_checkov_docker
   name: Checkov (Docker)
   description: Runs checkov on Terraform templates using Docker.
-  entry: checkov
+  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  docker_image: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
-  args: [-d, .]
+  args: [checkov, -d, .]
   always_run: false
   files: \.(tf|tofu)$
   exclude: \.terraform/.*$
@@ -239,20 +238,18 @@
   description: >-
     Static analysis of Terraform templates to spot potential security issues using Docker.
   require_serial: true
-  entry: trivy
+  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  docker_image: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
-  args: [config, .]
+  args: [trivy, config, .]
   files: \.(tf|tofu|tfvars)$
   exclude: \.terraform/.*$
 
 - id: infracost_breakdown_docker
   name: Infracost breakdown (Docker)
   description: Check terraform infrastructure cost using Docker.
-  entry: infracost
+  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  docker_image: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
-  args: [breakdown, --path, .]
+  args: [infracost, breakdown, --path, .]
   require_serial: true
   files: \.(tf|tofu|tfvars|hcl)$
   exclude: \.terraform/.*$

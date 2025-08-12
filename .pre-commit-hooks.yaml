@@ -219,7 +219,7 @@
   require_serial: true
   entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  args: [terraform-docs, markdown, table, --output-file, README.md, .]
+  args: [terraform-docs, markdown, table, ., --output-file, README.md]
   pass_filenames: false
   files: \.(tf|tofu|terraform\.lock\.hcl)$
   exclude: \.terraform/.*$

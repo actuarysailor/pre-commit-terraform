@@ -64,8 +64,16 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          ${{ matrix.dockerfile == 'Dockerfile' && format('{0}:{1}', env.IMAGE_REPO, env.IMAGE_TAG) || format('{0}-tools:{1}', env.IMAGE_REPO, env.IMAGE_TAG) }}
-          ${{ matrix.dockerfile == 'Dockerfile' && format('{0}:latest', env.IMAGE_REPO) || format('{0}-tools:latest', env.IMAGE_REPO) }}
+          ${{
+            matrix.dockerfile == 'Dockerfile'
+              && format('{0}:{1}', env.IMAGE_REPO, env.IMAGE_TAG)
+              || format('{0}-tools:{1}', env.IMAGE_REPO, env.IMAGE_TAG)
+          }}
+          ${{
+            matrix.dockerfile == 'Dockerfile'
+              && format('{0}:latest', env.IMAGE_REPO)
+              || format('{0}-tools:latest', env.IMAGE_REPO)
+          }}
         # Fix multi-platform: https://github.com/docker/buildx/issues/1533
         provenance: false
         secrets: |

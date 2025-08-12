@@ -34,20 +34,32 @@ jobs:
     - name: Verify GHCR token permissions
       run: |
         echo "Checking GHCR permissions for ${{ env.REGISTRY }}/${{ matrix.image_name }}"
-        response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+        response=$(curl -s -w "\n%{http_code}" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
           "https://${{ env.REGISTRY }}/v2/${{ matrix.image_name }}/tags/list")
-        if [ "$response" = "200" ]; then
+        body=$(echo "$response" | sed '$d')
+        status=$(echo "$response" | tail -n1)
+        if [ "$status" = "200" ]; then
           echo "Token has access to list tags for ${{ matrix.image_name }}."
         else
-          echo "Token does NOT have access to list tags for ${{ matrix.image_name }}. HTTP status: $response"
+          echo "Token does NOT have access to list tags for ${{ matrix.image_name }}. HTTP status: $status"
+          echo "Response body:"
+          echo "$body" | jq . || echo "$body"
           exit 1
         fi
 
     - name: Output GitHub API JSON with GITHUB_TOKEN
       if: always()
       run: |
-        echo "Full JSON response from GitHub API using GITHUB_TOKEN:"
-        curl -sS -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com | jq . || cat
+        echo "Full JSON response from GitHub API /user endpoint using GITHUB_TOKEN:"
+        user_json=$(curl -sS -D headers.txt -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user)
+        echo "$user_json" | jq . || cat
+        echo
+        echo "Response headers from /user endpoint as JSON:"
+        # Convert headers to JSON (simple key-value, not handling multi-line headers)
+        awk -F': ' 'NF==2{gsub(/\r/,"",$2); printf "\"%s\": \"%s\",\n", $1, $2}' headers.txt | \
+          sed '$ s/,$//' | \
+          awk 'BEGIN{print "{"} {print} END{print "}"}'
+        rm -f headers.txt
 
   docker:
     runs-on: ubuntu-latest

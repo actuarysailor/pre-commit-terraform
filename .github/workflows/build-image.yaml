@@ -50,12 +50,12 @@ jobs:
     - name: Output GitHub API JSON with GITHUB_TOKEN
       if: always()
       run: |
-        echo "Full JSON response from GitHub API /user endpoint using GITHUB_TOKEN:"
-        user_json=$(curl -sS -D headers.txt -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/user)
-        echo "$user_json" | jq . || cat
+        echo "Full JSON response from GitHub API /repos/:owner/:repo endpoint using GITHUB_TOKEN (should always work):"
+        repo_json=$(curl -sS -D headers.txt -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}")
+        echo "$repo_json" | jq . || cat
         echo
-        echo "Response headers from /user endpoint as JSON:"
-        # Convert headers to JSON (simple key-value, not handling multi-line headers)
+        echo "Response headers from /repos/:owner/:repo endpoint as JSON:"
         awk -F': ' 'NF==2{gsub(/\r/,"",$2); printf "\"%s\": \"%s\",\n", $1, $2}' headers.txt | \
           sed '$ s/,$//' | \
           awk 'BEGIN{print "{"} {print} END{print "}"}'

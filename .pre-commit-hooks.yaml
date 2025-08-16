@@ -203,7 +203,8 @@
   require_serial: true
   entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
-  args: [bash, -c, "/usr/bin/hooks/terraform_validate.sh --hook-config=--retry-once-with-cleanup=true --hook-config=--parallelism-ci-cpu-cores=2"]
+  args: [bash, -c, /usr/bin/hooks/terraform_validate.sh --hook-config=--retry-once-with-cleanup=true
+      --hook-config=--parallelism-ci-cpu-cores=2]
   pass_filenames: false
   files: \.(tf|tofu|tfvars|terraform\.lock\.hcl)$
   exclude: \.terraform/.*$

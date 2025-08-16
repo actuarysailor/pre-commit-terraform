@@ -201,7 +201,7 @@
     NOTE: Requires Docker to be available. Use 'skip' in .pre-commit-config.yaml
     if running on pre-commit.ci or other environments without Docker.
   require_serial: true
-  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:sha-26e2d3a
+  entry: ghcr.io/actuarysailor/pre-commit-terraform-tools:latest
   language: docker_image
   args:
   - /usr/bin/hooks/terraform_validate.sh
